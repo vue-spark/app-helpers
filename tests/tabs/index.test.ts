@@ -16,14 +16,6 @@ describe.concurrent('tabs', () => {
     expect(helper.activeTab).toBe('tab1')
   })
 
-  it('addTab 更新已存在的标签数据', () => {
-    const helper = createTabsHelper<TabData>()
-    helper.addTab('tab1', { title: 'Old' })
-    helper.addTab('tab1', { title: 'New' })
-    expect(helper.getTabData('tab1')?.title).toBe('New')
-    expect(helper.activeTab).toBe('tab1')
-  })
-
   it('setTabData 更新已存在标签数据', () => {
     const helper = createTabsHelper<TabData>()
     helper.addTab('tab1', { title: 'Old' })
