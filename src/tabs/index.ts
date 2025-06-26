@@ -79,7 +79,7 @@ export interface TabsHelper<TabData extends {}> {
   getSideTabs: (tab: TabType, side: TabsSideType) => [tab: TabType, tabData: TabData][]
 
   /**
-   * 添加标签和标签数据，遇到重复的标签仅更新标签数据
+   * 添加标签和标签数据，遇到重复的标签将会跳过，否则会在添加后更新激活标签
    * @param tab 标签
    * @param tabData 标签数据
    */
@@ -206,8 +206,10 @@ export function createTabsHelper<TabData extends {}>(
     },
 
     addTab(targetTab, tabData) {
-      setTab(targetTab, tabData)
-      setActiveTab(targetTab)
+      if (!helper.hasTab(targetTab)) {
+        setTab(targetTab, tabData)
+        setActiveTab(targetTab)
+      }
     },
 
     hasTab(targetTab) {
