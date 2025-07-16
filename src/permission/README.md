@@ -51,7 +51,10 @@ interface Permission {
    * @param op 操作符，默认为 `or`
    * @returns 检查结果
    */
-  check: (codes: PermissionCode | PermissionCode[], op?: PermissionOperator) => boolean
+  check: (
+    codes: PermissionCode | PermissionCode[],
+    op?: PermissionOperator,
+  ) => boolean
 }
 ```
 

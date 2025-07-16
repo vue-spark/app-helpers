@@ -1,5 +1,8 @@
 {
-  "extends": ["@vue/tsconfig/tsconfig.dom.json", "@vue/tsconfig/tsconfig.lib.json"],
+  "extends": [
+    "@vue/tsconfig/tsconfig.dom.json",
+    "@vue/tsconfig/tsconfig.lib.json"
+  ],
   "compilerOptions": {
     "tsBuildInfoFile": "./node_modules/.cache/tsconfig.lib.tsbuildinfo",
     "lib": ["ES2022", "DOM", "DOM.Iterable"],

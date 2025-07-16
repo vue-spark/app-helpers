@@ -70,11 +70,14 @@ export function parseUrl(options: ParseUrlOptions): ParseUrlResult | null {
   const searchParams = resolveUrlSearchParams(url)
 
   // If there are no parameters, return null
-  if (!searchParams.size)
+  if (!searchParams.size) {
     return null
+  }
 
   const paramGroups = normalizeParamGroups(
-    isArray(paramGroupsRaw) ? { [defaultGroupKey]: paramGroupsRaw } : paramGroupsRaw,
+    isArray(paramGroupsRaw)
+      ? { [defaultGroupKey]: paramGroupsRaw }
+      : paramGroupsRaw,
   )
   for (const group of paramGroups) {
     if (validateGroup(searchParams, group)) {
@@ -84,7 +87,7 @@ export function parseUrl(options: ParseUrlOptions): ParseUrlResult | null {
         rawUrl: url,
         cleanUrl: removeUrlSearchParams(
           url,
-          group.params.map(p => p.name),
+          group.params.map((p) => p.name),
         ),
       }
     }
@@ -106,12 +109,16 @@ function pickGroupData(
   )
 }
 
-function validateGroup(searchParams: URLSearchParams, group: ParamGroup): boolean {
+function validateGroup(
+  searchParams: URLSearchParams,
+  group: ParamGroup,
+): boolean {
   return (
     group.params.length > 0 &&
     group.params.every((param) => {
-      if (!param.required)
+      if (!param.required) {
         return true
+      }
       return searchParams.has(param.name)
     })
   )

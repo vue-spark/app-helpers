@@ -20,7 +20,10 @@ export interface Permission {
    * @param op check permission operator, default is 'or'
    * @returns whether the user has permission
    */
-  check: (codes: PermissionCode | PermissionCode[], op?: PermissionOperator) => boolean
+  check: (
+    codes: PermissionCode | PermissionCode[],
+    op?: PermissionOperator,
+  ) => boolean
   install: (app: App) => void
 }
 
@@ -42,7 +45,7 @@ export function createPermission(options: PermissionOptions = {}): Permission {
       return [...codeSet.value]
     },
     add(codes) {
-      ensureArray(codes).forEach(code => codeSet.value.add(code))
+      ensureArray(codes).forEach((code) => codeSet.value.add(code))
       triggerRef(codeSet)
     },
     set(codes) {
@@ -52,13 +55,17 @@ export function createPermission(options: PermissionOptions = {}): Permission {
       codeSet.value = new Set()
     },
     check(codes, op = 'or') {
-      if (codeSet.value.has(PERMISSION_CODE_ALL))
+      if (codeSet.value.has(PERMISSION_CODE_ALL)) {
         return true
+      }
 
-      if (codeSet.value.size === 0)
+      if (codeSet.value.size === 0) {
         return false
+      }
 
-      return ensureArray(codes)[op === 'and' ? 'every' : 'some'](code => codeSet.value.has(code))
+      return ensureArray(codes)[op === 'and' ? 'every' : 'some']((code) =>
+        codeSet.value.has(code),
+      )
     },
     install(app) {
       app.config.globalProperties.$permission = permission

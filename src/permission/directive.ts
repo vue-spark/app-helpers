@@ -27,7 +27,8 @@ export const vPermission: Directive<
   mounted(el, binding) {
     const { value, arg, instance } = binding
     const permission = instance && (instance.$permission as Permission | null)
-    if (!permission || !permission.check(value, arg))
+    if (!permission || !permission.check(value, arg)) {
       el.remove()
+    }
   },
 }

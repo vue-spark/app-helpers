@@ -17,5 +17,7 @@ export interface Param {
 export type ParamRaw = ParamName | Param
 
 export function normalizeParams(params: ParamRaw[]): Param[] {
-  return params.map(p => assign({ required: true }, !isObject(p) ? { name: p } : p))
+  return params.map((p) =>
+    assign({ required: true }, !isObject(p) ? { name: p } : p),
+  )
 }

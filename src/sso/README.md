@@ -26,7 +26,9 @@ function mount() {
     app.mount('#app')
     return
   }
-  location.replace(`http://sso-url/?redirect_uri=${removeUrlSearchParams(location.href, true)}`)
+  location.replace(
+    `http://sso-url/?redirect_uri=${removeUrlSearchParams(location.href, true)}`,
+  )
 }
 
 mount()

@@ -28,7 +28,10 @@ export interface TabsHelperOptions<TabData extends {}> {
    * })
    * ```
    */
-  beforeRemove?: (ctx: { tab: TabType, tabData: TabData }) => boolean | Promise<boolean>
+  beforeRemove?: (ctx: {
+    tab: TabType
+    tabData: TabData
+  }) => boolean | Promise<boolean>
 }
 
 export interface TabsHelper<TabData extends {}> {
@@ -76,7 +79,10 @@ export interface TabsHelper<TabData extends {}> {
    * @param tab 指定标签
    * @param side 指定方向侧
    */
-  getSideTabs: (tab: TabType, side: TabsSideType) => [tab: TabType, tabData: TabData][]
+  getSideTabs: (
+    tab: TabType,
+    side: TabsSideType,
+  ) => [tab: TabType, tabData: TabData][]
 
   /**
    * 添加标签和标签数据，遇到重复的标签将会跳过，否则会在添加后更新激活标签
@@ -110,7 +116,9 @@ export interface TabsHelper<TabData extends {}> {
    * 尝试移除指定标签列表，只有返回真值才可以真正移除
    * @param tabs 标签列表
    */
-  tryRemoveTabs: (tabs: (TabType | [tab: TabType, tabData: TabData])[]) => Promise<boolean>
+  tryRemoveTabs: (
+    tabs: (TabType | [tab: TabType, tabData: TabData])[],
+  ) => Promise<boolean>
 
   /**
    * 移除指定标签，若移除的是当前激活标签则移除前会自动激活下一个标签
@@ -147,8 +155,9 @@ export function createTabsHelper<TabData extends {}>(
   }
 
   const canRemoveTab = (targetTab: _TabType): boolean => {
-    if (tabMap.value.size <= 1)
+    if (tabMap.value.size <= 1) {
       return false
+    }
 
     targetTab = getRealTab(targetTab)
     const tabData = tabMap.value.get(targetTab)
@@ -161,7 +170,7 @@ export function createTabsHelper<TabData extends {}>(
   }
 
   const removeTabs = (targetTabs: _TabType[]): void => {
-    targetTabs.forEach(tab => tabMap.value.delete(getRealTab(tab)))
+    targetTabs.forEach((tab) => tabMap.value.delete(getRealTab(tab)))
     triggerRef(tabMap)
   }
 
@@ -221,11 +230,16 @@ export function createTabsHelper<TabData extends {}>(
     },
 
     canRemoveOtherTabs(targetTab = helper.activeTab) {
-      return !!targetTab && helper.getTabs().some(([tab]) => tab !== targetTab && canRemoveTab(tab))
+      return (
+        !!targetTab &&
+        helper.getTabs().some(([tab]) => tab !== targetTab && canRemoveTab(tab))
+      )
     },
 
     canRemoveSideTabs(side, targetTab = helper.activeTab) {
-      return !!targetTab && helper.getSideTabs(targetTab, side).some(canRemoveTab)
+      return (
+        !!targetTab && helper.getSideTabs(targetTab, side).some(canRemoveTab)
+      )
     },
 
     async tryRemoveTabs(targetTabs) {
@@ -244,8 +258,9 @@ export function createTabsHelper<TabData extends {}>(
           valid = false
         }
 
-        if (!valid)
+        if (!valid) {
           break
+        }
       }
       return valid
     },
@@ -272,12 +287,16 @@ export function createTabsHelper<TabData extends {}>(
     },
 
     async removeOtherTabs(targetTab = helper.activeTab) {
-      if (!targetTab)
+      if (!targetTab) {
         return
+      }
 
-      const otherTabs = helper.getTabs().filter(([tab]) => tab !== targetTab && canRemoveTab(tab))
-      if (!(await helper.tryRemoveTabs(otherTabs)))
+      const otherTabs = helper
+        .getTabs()
+        .filter(([tab]) => tab !== targetTab && canRemoveTab(tab))
+      if (!(await helper.tryRemoveTabs(otherTabs))) {
         return
+      }
 
       // 如果移除的不是当前激活的标签，则设置当前激活的标签为该标签
       targetTab !== helper.activeTab && setActiveTab(targetTab)
@@ -286,15 +305,18 @@ export function createTabsHelper<TabData extends {}>(
     },
 
     async removeSideTabs(side, targetTab = helper.activeTab) {
-      if (!targetTab)
+      if (!targetTab) {
         return
+      }
 
       const sideTabs = helper.getSideTabs(targetTab, side).filter(canRemoveTab)
-      if (!(await helper.tryRemoveTabs(sideTabs)))
+      if (!(await helper.tryRemoveTabs(sideTabs))) {
         return
+      }
 
       const activeInSide =
-        targetTab !== helper.activeTab && sideTabs.some(([tab]) => tab === helper.activeTab)
+        targetTab !== helper.activeTab &&
+        sideTabs.some(([tab]) => tab === helper.activeTab)
 
       // 如果当前激活标签在该移除侧的标签中，则设置当前激活的标签为该标签
       activeInSide && setActiveTab(targetTab)

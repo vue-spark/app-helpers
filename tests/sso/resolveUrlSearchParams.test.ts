@@ -3,13 +3,17 @@ import { resolveUrlSearchParams } from '../../src/sso'
 
 describe.concurrent('resolveUrlSearchParams', () => {
   it('解析基础查询参数', () => {
-    const result = resolveUrlSearchParams('https://example.com?access_token=abc123&state=true')
+    const result = resolveUrlSearchParams(
+      'https://example.com?access_token=abc123&state=true',
+    )
     expect(result.get('access_token')).toBe('abc123')
     expect(result.get('state')).toBe('true')
   })
 
   it('处理 hash 中的参数', () => {
-    const result = resolveUrlSearchParams('https://example.com#hash?param=1&key=value')
+    const result = resolveUrlSearchParams(
+      'https://example.com#hash?param=1&key=value',
+    )
     expect(result.get('param')).toBe('1')
     expect(result.get('key')).toBe('value')
   })
@@ -20,7 +24,9 @@ describe.concurrent('resolveUrlSearchParams', () => {
   })
 
   it('解析编码字符', () => {
-    const result = resolveUrlSearchParams('https://example.com?filter%5B0%5D=value')
+    const result = resolveUrlSearchParams(
+      'https://example.com?filter%5B0%5D=value',
+    )
     // 自动解码 `%5B` 为 `[`
     expect(result.get('filter[0]')).toBe('value')
   })

@@ -1,4 +1,8 @@
-import type { AllowedComponentProps, ComponentCustomProps, VNodeProps } from 'vue'
+import type {
+  AllowedComponentProps,
+  ComponentCustomProps,
+  VNodeProps,
+} from 'vue'
 import type { PermissionCode, PermissionOperator } from './core'
 import { defineComponent } from 'vue'
 import { usePermission } from './injection'
@@ -27,7 +31,9 @@ const PermissionGuardImpl = /* #__PURE__ */ defineComponent({
   setup(props: PermissionGuardProps, { slots }) {
     const permission = usePermission()
     return () => {
-      return slots.default && permission.check(props.codes, props.op) ? slots.default() : null
+      return slots.default && permission.check(props.codes, props.op)
+        ? slots.default()
+        : null
     }
   },
 })
@@ -53,6 +59,9 @@ const PermissionGuardImpl = /* #__PURE__ */ defineComponent({
  */
 export const PermissionGuard = PermissionGuardImpl as unknown as {
   new (): {
-    $props: AllowedComponentProps & ComponentCustomProps & VNodeProps & PermissionGuardProps
+    $props: AllowedComponentProps &
+      ComponentCustomProps &
+      VNodeProps &
+      PermissionGuardProps
   }
 }

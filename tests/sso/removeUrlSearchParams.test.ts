@@ -30,17 +30,24 @@ describe.concurrent('removeUrlSearchParams', () => {
   })
 
   it('兼容 hash 模式 URL', () => {
-    const result = removeUrlSearchParams('https://example.com#hash?param=1', ['param'])
+    const result = removeUrlSearchParams('https://example.com#hash?param=1', [
+      'param',
+    ])
     expect(result).toBe('https://example.com#hash')
   })
 
   it('处理重复参数', () => {
-    const result = removeUrlSearchParams('https://example.com?a=1&a=2&b=3', ['a'])
+    const result = removeUrlSearchParams('https://example.com?a=1&a=2&b=3', [
+      'a',
+    ])
     expect(result).toBe('https://example.com?b=3')
   })
 
   it('处理特殊字符参数', () => {
-    const result = removeUrlSearchParams('https://example.com?filter%5B0%5D=value', ['filter[0]'])
+    const result = removeUrlSearchParams(
+      'https://example.com?filter%5B0%5D=value',
+      ['filter[0]'],
+    )
     expect(result).toBe('https://example.com')
   })
 

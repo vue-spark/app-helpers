@@ -24,7 +24,8 @@ interface TabData {
 }
 
 // 可自由扩展相关功能
-interface Tabs extends TabsHelper<TabData> {}
+interface Tabs extends TabsHelper<TabData> {
+}
 
 const tabs: Tabs = createTabsHelper<TabData>({
   // 判断标签是否可删除
@@ -108,7 +109,10 @@ interface TabsHelperOptions<TabData extends {}> {
    * })
    * ```
    */
-  beforeRemove?: (ctx: { tab: TabType, tabData: TabData }) => boolean | Promise<boolean>
+  beforeRemove?: (ctx: {
+    tab: TabType
+    tabData: TabData
+  }) => boolean | Promise<boolean>
 }
 
 interface TabsHelper<TabData extends {}> {
@@ -156,7 +160,10 @@ interface TabsHelper<TabData extends {}> {
    * @param tab 指定标签
    * @param side 指定方向侧
    */
-  getSideTabs: (tab: TabType, side: TabsSideType) => [tab: TabType, tabData: TabData][]
+  getSideTabs: (
+    tab: TabType,
+    side: TabsSideType,
+  ) => [tab: TabType, tabData: TabData][]
 
   /**
    * 添加标签和标签数据，遇到重复的标签仅更新标签数据
@@ -190,7 +197,9 @@ interface TabsHelper<TabData extends {}> {
    * 尝试移除指定标签列表，只有返回真值才可以真正移除
    * @param tabs 标签列表
    */
-  tryRemoveTabs: (tabs: (TabType | [tab: TabType, tabData: TabData])[]) => Promise<boolean>
+  tryRemoveTabs: (
+    tabs: (TabType | [tab: TabType, tabData: TabData])[],
+  ) => Promise<boolean>
 
   /**
    * 移除指定标签

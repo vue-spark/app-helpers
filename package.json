@@ -55,6 +55,7 @@
   },
   "devDependencies": {
     "@antfu/eslint-config": "^4.14.1",
+    "@sxzz/prettier-config": "^2.2.3",
     "@tsconfig/node22": "^22.0.2",
     "@types/node": "^22.15.17",
     "@vue/tsconfig": "^0.7.0",
