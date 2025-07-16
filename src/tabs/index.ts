@@ -65,6 +65,11 @@ export interface TabsHelper<TabData extends {}> {
   setTabData: (tab: TabType, tabData: TabData) => void
 
   /**
+   * 获取标签数量
+   */
+  getTabsCount: () => number
+
+  /**
    * 获取所有标签和标签数据
    */
   getTabs: () => [tab: TabType, tabData: TabData][]
@@ -205,8 +210,16 @@ export function createTabsHelper<TabData extends {}>(
       helper.hasTab(targetTab) && setTab(targetTab, tabData)
     },
 
+    getTabsCount() {
+      return tabMap.value.size
+    },
+
     getTabs() {
       return [...tabMap.value]
+    },
+
+    setTabs(tabs) {
+      tabMap.value = new Map(tabs)
     },
 
     indexOf(targetTab) {
@@ -217,10 +230,6 @@ export function createTabsHelper<TabData extends {}>(
       const tabs = helper.getTabs()
       const index = helper.indexOf(targetTab)
       return side === 'left' ? tabs.slice(0, index) : tabs.slice(index + 1)
-    },
-
-    setTabs(tabs) {
-      tabMap.value = new Map(tabs)
     },
 
     addTab(targetTab, tabData) {
