@@ -1,4 +1,5 @@
-import { shallowRef, triggerRef } from 'vue'
+import type { EffectScope } from 'vue'
+import { effectScope, shallowRef, triggerRef } from 'vue'
 import { assign, isArray } from '@/utils'
 
 type TabType = string
@@ -39,6 +40,11 @@ export interface TabsHelper<TabData extends {}> {
    * 配置项
    */
   options: TabsHelperOptions<TabData>
+  /**
+   * 响应式副作用域，创建响应式变量或监听响应式数据时应在 `scope.run()` 中执行，
+   * 在合适时需要调用 `scope.stop()` 释放响应式副作用
+   */
+  scope: EffectScope
 
   /**
    * 当前激活的标签
@@ -146,8 +152,9 @@ export function createTabsHelper<TabData extends {}>(
   userOptions: TabsHelperOptions<TabData> = {},
 ): TabsHelper<TabData> {
   const options = assign({}, defaultOptions, userOptions)
-  const activeTab = shallowRef<TabType>()
-  const tabMap = shallowRef(new Map<TabType, TabData>())
+  const scope = effectScope(true)
+  const activeTab = scope.run(() => shallowRef<TabType>())!
+  const tabMap = scope.run(() => shallowRef(new Map<TabType, TabData>()))!
 
   type _TabType = TabType | [tab: TabType, tabData: TabData]
   const getRealTab = (targetTab: _TabType): TabType => {
@@ -180,6 +187,8 @@ export function createTabsHelper<TabData extends {}>(
 
   const helper: TabsHelper<TabData> = {
     options,
+
+    scope,
 
     get activeTab() {
       return activeTab.value
