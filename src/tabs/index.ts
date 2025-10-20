@@ -5,6 +5,14 @@ import { assign, isArray } from '@/utils'
 type TabType = string
 export type TabsSideType = 'left' | 'right'
 
+export interface TabsHelperRemoveOptions {
+  /**
+   * 当前激活的标签被移除时，是否激活下一个标签
+   * @default true
+   */
+  activeNext?: boolean
+}
+
 export interface TabsHelperOptions<TabData extends {}> {
   /**
    * 判断标签是否可移除，返回假值时，标签将不可移除
@@ -99,8 +107,19 @@ export interface TabsHelper<TabData extends {}> {
    * 添加标签和标签数据，遇到重复的标签将会跳过，否则会在添加后更新激活标签
    * @param tab 标签
    * @param tabData 标签数据
+   * @param options 选项
    */
-  addTab: (tab: TabType, tabData: TabData) => void
+  addTab: (
+    tab: TabType,
+    tabData: TabData,
+    options?: {
+      /**
+       * 是否激活该标签
+       * @default true
+       */
+      active?: boolean
+    },
+  ) => void
   /**
    * 判断是否存在指定标签
    * @param tab 标签
@@ -134,18 +153,21 @@ export interface TabsHelper<TabData extends {}> {
   /**
    * 移除指定标签，若移除的是当前激活标签则移除前会自动激活下一个标签
    * @param tab 指定标签，默认为当前激活的标签
+   * @param options 选项
    */
-  removeTab: (tab?: TabType) => Promise<void>
+  removeTab: (tab?: TabType, options?: TabsHelperRemoveOptions) => Promise<void>
   /**
    * 移除除过指定标签的其他可移除的标签，并将指定标签设置为激活标签
    * @param tab 指定标签，默认为当前激活的标签
+   * @param options 选项
    */
-  removeOtherTabs: (tab?: TabType) => Promise<void>
+  removeOtherTabs: (tab?: TabType, options?: TabsHelperRemoveOptions) => Promise<void>
   /**
    * 移除指定标签的指定方向侧的所有可移除的标签，若当前激活的标签存在被移除的标签内，则将指定标签设置为激活标签
    * @param tab 指定标签，默认为当前激活的标签
+   * @param options 选项
    */
-  removeSideTabs: (side: TabsSideType, tab?: TabType) => Promise<void>
+  removeSideTabs: (side: TabsSideType, tab?: TabType, options?: TabsHelperRemoveOptions) => Promise<void>
 }
 
 const defaultOptions = {
@@ -232,10 +254,10 @@ export function createTabsHelper<TabData extends {}>(
       return side === 'left' ? tabs.slice(0, index) : tabs.slice(index + 1)
     },
 
-    addTab(targetTab, tabData) {
+    addTab(targetTab, tabData, { active = true } = {}) {
       if (!helper.hasTab(targetTab)) {
         setTab(targetTab, tabData)
-        setActiveTab(targetTab)
+        active && setActiveTab(targetTab)
       }
     },
 
@@ -283,7 +305,7 @@ export function createTabsHelper<TabData extends {}>(
       return valid
     },
 
-    async removeTab(targetTab = helper.activeTab) {
+    async removeTab(targetTab = helper.activeTab, { activeNext = true } = {}) {
       if (
         tabMap.value.size <= 1 ||
         !targetTab ||
@@ -299,12 +321,12 @@ export function createTabsHelper<TabData extends {}>(
       const nextTab = isActive ? tabs[index - 1] || tabs[index + 1] : null
 
       // 如果移除的是当前激活的，则设置下一个需要激活的标签
-      nextTab && setActiveTab(nextTab)
+      nextTab && activeNext && setActiveTab(nextTab)
 
       removeTabs([targetTab])
     },
 
-    async removeOtherTabs(targetTab = helper.activeTab) {
+    async removeOtherTabs(targetTab = helper.activeTab, { activeNext = true } = {}) {
       if (!targetTab) {
         return
       }
@@ -317,12 +339,12 @@ export function createTabsHelper<TabData extends {}>(
       }
 
       // 如果移除的不是当前激活的标签，则设置当前激活的标签为该标签
-      targetTab !== helper.activeTab && setActiveTab(targetTab)
+      activeNext && targetTab !== helper.activeTab && setActiveTab(targetTab)
 
       removeTabs(otherTabs)
     },
 
-    async removeSideTabs(side, targetTab = helper.activeTab) {
+    async removeSideTabs(side, targetTab = helper.activeTab, { activeNext = true } = {}) {
       if (!targetTab) {
         return
       }
@@ -337,7 +359,7 @@ export function createTabsHelper<TabData extends {}>(
         sideTabs.some(([tab]) => tab === helper.activeTab)
 
       // 如果当前激活标签在该移除侧的标签中，则设置当前激活的标签为该标签
-      activeInSide && setActiveTab(targetTab)
+      activeInSide && activeNext && setActiveTab(targetTab)
 
       removeTabs(sideTabs)
     },

@@ -16,6 +16,26 @@ describe.concurrent('tabs', () => {
     expect(helper.activeTab).toBe('tab1')
   })
 
+  it('addTab 使用 active: false 添加标签但不激活', () => {
+    const helper = createTabsHelper<TabData>()
+    helper.addTab('tab1', { title: 'A' })
+    helper.addTab('tab2', { title: 'B' }, { active: false })
+
+    expect(helper.getTabs()).toEqual([
+      ['tab1', { title: 'A' }],
+      ['tab2', { title: 'B' }],
+    ])
+    expect(helper.activeTab).toBe('tab1') // 仍然是 tab1
+  })
+
+  it('addTab 使用 active: true 显式激活标签', () => {
+    const helper = createTabsHelper<TabData>()
+    helper.addTab('tab1', { title: 'A' })
+    helper.addTab('tab2', { title: 'B' }, { active: true })
+
+    expect(helper.activeTab).toBe('tab2')
+  })
+
   it('setTabData 更新已存在标签数据', () => {
     const helper = createTabsHelper<TabData>()
     helper.addTab('tab1', { title: 'Old' })
@@ -104,6 +124,38 @@ describe.concurrent('tabs', () => {
     expect(helper.activeTab).toBe('tab2')
   })
 
+  it('removeTab 使用 activeNext: false 移除标签但不激活下一个', async () => {
+    const helper = createTabsHelper<TabData>()
+    helper.addTab('tab1', {})
+    helper.addTab('tab2', {})
+    helper.addTab('tab3', {})
+
+    helper.activeTab = 'tab1'
+    await helper.removeTab('tab1', { activeNext: false })
+
+    expect(helper.getTabs()).toEqual([
+      ['tab2', {}],
+      ['tab3', {}],
+    ])
+    expect(helper.activeTab).toBe('tab1') // 仍然是 tab1（虽然已被移除）
+  })
+
+  it('removeTab 使用 activeNext: true 显式激活下一个标签', async () => {
+    const helper = createTabsHelper<TabData>()
+    helper.addTab('tab1', {})
+    helper.addTab('tab2', {})
+    helper.addTab('tab3', {})
+
+    helper.activeTab = 'tab2'
+    await helper.removeTab('tab2', { activeNext: true })
+
+    expect(helper.getTabs()).toEqual([
+      ['tab1', {}],
+      ['tab3', {}],
+    ])
+    expect(helper.activeTab).toBe('tab1') // 激活前一个标签
+  })
+
   it('removeTab 当 beforeRemove 返回 false 时不移除标签', async () => {
     const helper = createTabsHelper<TabData>({
       beforeRemove: () => false,
@@ -133,6 +185,32 @@ describe.concurrent('tabs', () => {
       ['c', { isFixed: false }],
     ])
     expect(helper.activeTab).toBe('c')
+  })
+
+  it('removeOtherTabs 使用 activeNext: false 不激活目标标签', async () => {
+    const helper = createTabsHelper<TabData>()
+    helper.addTab('a', {})
+    helper.addTab('b', {})
+    helper.addTab('c', {})
+
+    helper.activeTab = 'a'
+    await helper.removeOtherTabs('c', { activeNext: false })
+
+    expect(helper.getTabs()).toEqual([['c', {}]])
+    expect(helper.activeTab).toBe('a') // 仍然是 a（虽然已被移除）
+  })
+
+  it('removeOtherTabs 使用 activeNext: true 激活目标标签', async () => {
+    const helper = createTabsHelper<TabData>()
+    helper.addTab('a', {})
+    helper.addTab('b', {})
+    helper.addTab('c', {})
+
+    helper.activeTab = 'a'
+    await helper.removeOtherTabs('b', { activeNext: true })
+
+    expect(helper.getTabs()).toEqual([['b', {}]])
+    expect(helper.activeTab).toBe('b')
   })
 
   it('removeOtherTabs 当无其他可移除标签时不执行', async () => {
@@ -165,9 +243,60 @@ describe.concurrent('tabs', () => {
     expect(helper.activeTab).toBe('b')
   })
 
+  it('removeSideTabs 移除右侧标签', async () => {
+    const helper = createTabsHelper<TabData>()
+    helper.addTab('a', {})
+    helper.addTab('b', {})
+    helper.addTab('c', {})
+    helper.addTab('d', {})
+
+    helper.activeTab = 'c'
+    await helper.removeSideTabs('right', 'b')
+
+    expect(helper.getTabs()).toEqual([
+      ['a', {}],
+      ['b', {}],
+    ])
+    expect(helper.activeTab).toBe('b') // 激活的标签在右侧被移除，所以激活目标标签
+  })
+
+  it('removeSideTabs 使用 activeNext: false 不激活目标标签', async () => {
+    const helper = createTabsHelper<TabData>()
+    helper.addTab('a', {})
+    helper.addTab('b', {})
+    helper.addTab('c', {})
+    helper.addTab('d', {})
+
+    helper.activeTab = 'a'
+    await helper.removeSideTabs('left', 'c', { activeNext: false })
+
+    expect(helper.getTabs()).toEqual([
+      ['c', {}],
+      ['d', {}],
+    ])
+    expect(helper.activeTab).toBe('a') // 仍然是 a（虽然已被移除）
+  })
+
+  it('removeSideTabs 使用 activeNext: true 当激活标签在移除侧时激活目标标签', async () => {
+    const helper = createTabsHelper<TabData>()
+    helper.addTab('a', {})
+    helper.addTab('b', {})
+    helper.addTab('c', {})
+    helper.addTab('d', {})
+
+    helper.activeTab = 'd'
+    await helper.removeSideTabs('right', 'b', { activeNext: true })
+
+    expect(helper.getTabs()).toEqual([
+      ['a', {}],
+      ['b', {}],
+    ])
+    expect(helper.activeTab).toBe('b') // d 在右侧被移除，激活 b
+  })
+
   it('自定义选项覆盖默认行为', () => {
     const customOptions = {
-      isRemovable: ({ tabData }) => tabData.isRemovable,
+      isRemovable: ({ tabData }: { tabData: TabData }) => !!tabData.isRemovable,
       beforeRemove: () => Promise.resolve(true),
     }
 
