@@ -1,4 +1,5 @@
-import { normalizeParams, type Param, type ParamRaw } from './param'
+import type { Param, ParamRaw } from './param'
+import { normalizeParams } from './param'
 
 export type ParamGroupKey = PropertyKey
 

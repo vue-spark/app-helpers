@@ -29,7 +29,9 @@ export const vPermission: Directive<
     const permission = instance && (instance.$permission as Permission | null)
     if (!permission) {
       // 必须通过 `app.use(createPermission())` 注册插件后才能使用 `vPermission` 指令
-      throw new Error('`vPermission` directive must be used after `app.use(createPermission())`')
+      throw new Error(
+        '`vPermission` directive must be used after `app.use(createPermission())`',
+      )
     }
     if (!permission.check(value, arg)) {
       el.remove()

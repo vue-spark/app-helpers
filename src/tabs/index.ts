@@ -161,13 +161,20 @@ export interface TabsHelper<TabData extends {}> {
    * @param tab 指定标签，默认为当前激活的标签
    * @param options 选项
    */
-  removeOtherTabs: (tab?: TabType, options?: TabsHelperRemoveOptions) => Promise<void>
+  removeOtherTabs: (
+    tab?: TabType,
+    options?: TabsHelperRemoveOptions,
+  ) => Promise<void>
   /**
    * 移除指定标签的指定方向侧的所有可移除的标签，若当前激活的标签存在被移除的标签内，则将指定标签设置为激活标签
    * @param tab 指定标签，默认为当前激活的标签
    * @param options 选项
    */
-  removeSideTabs: (side: TabsSideType, tab?: TabType, options?: TabsHelperRemoveOptions) => Promise<void>
+  removeSideTabs: (
+    side: TabsSideType,
+    tab?: TabType,
+    options?: TabsHelperRemoveOptions,
+  ) => Promise<void>
 }
 
 const defaultOptions = {
@@ -326,7 +333,10 @@ export function createTabsHelper<TabData extends {}>(
       removeTabs([targetTab])
     },
 
-    async removeOtherTabs(targetTab = helper.activeTab, { activeNext = true } = {}) {
+    async removeOtherTabs(
+      targetTab = helper.activeTab,
+      { activeNext = true } = {},
+    ) {
       if (!targetTab) {
         return
       }
@@ -344,7 +354,11 @@ export function createTabsHelper<TabData extends {}>(
       removeTabs(otherTabs)
     },
 
-    async removeSideTabs(side, targetTab = helper.activeTab, { activeNext = true } = {}) {
+    async removeSideTabs(
+      side,
+      targetTab = helper.activeTab,
+      { activeNext = true } = {},
+    ) {
       if (!targetTab) {
         return
       }

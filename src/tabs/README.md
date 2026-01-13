@@ -13,8 +13,9 @@ npm i @vue-spark/app-helpers
 ### 初始化
 
 ```ts
+import type { TabsHelper } from '@vue-spark/app-helpers/tabs'
 // src/modules/tabs.ts
-import { createTabsHelper, type TabsHelper } from '@vue-spark/app-helpers/tabs'
+import { createTabsHelper } from '@vue-spark/app-helpers/tabs'
 
 // 可自由扩展标签关联数据
 interface TabData {
@@ -24,8 +25,7 @@ interface TabData {
 }
 
 // 可自由扩展相关功能
-interface Tabs extends TabsHelper<TabData> {
-}
+interface Tabs extends TabsHelper<TabData> {}
 
 const tabs: Tabs = createTabsHelper<TabData>({
   // 判断标签是否可删除

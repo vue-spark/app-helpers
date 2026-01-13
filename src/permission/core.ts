@@ -1,4 +1,5 @@
-import { type App, effectScope, type ShallowReactive, shallowRef, triggerRef } from 'vue'
+import type { App, ShallowReactive } from 'vue'
+import { effectScope, shallowRef, triggerRef } from 'vue'
 import { ensureArray } from '@/utils'
 import { permissionKey } from './injection'
 
@@ -40,7 +41,9 @@ export interface PermissionOptions {
  */
 export function createPermission(options: PermissionOptions = {}): Permission {
   const scope = effectScope(true)
-  const codeSet = scope.run(() => shallowRef(new Set(ensureArray(options.initialCodes ?? []))))!
+  const codeSet = scope.run(() =>
+    shallowRef(new Set(ensureArray(options.initialCodes ?? []))),
+  )!
   const permission: Permission = {
     get codes() {
       return [...codeSet.value]

@@ -1,5 +1,6 @@
+import type { InjectionKey } from 'vue'
 import type { Permission } from './core'
-import { inject, type InjectionKey } from 'vue'
+import { inject } from 'vue'
 
 export const permissionKey: InjectionKey<Permission> = Symbol('permission key')
 
