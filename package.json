@@ -19,8 +19,7 @@
     "app",
     "helpers",
     "permission",
-    "sso",
-    "tabs"
+    "sso"
   ],
   "exports": {
     "./*": "./dist/*/index.js",
