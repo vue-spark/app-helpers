@@ -54,7 +54,7 @@
     }
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^4.19.0",
+    "@antfu/eslint-config": "^6.7.3",
     "@sxzz/prettier-config": "^2.2.6",
     "@tsconfig/node24": "^24.0.3",
     "@types/node": "^24.10.7",
