@@ -19,6 +19,6 @@ export type ParamGroupsRaw = Record<ParamGroupKey, ParamRaw[]>
 export function normalizeParamGroups(groups: ParamGroupsRaw): ParamGroup[] {
   return Reflect.ownKeys(groups).map((key) => ({
     key,
-    params: normalizeParams(groups[key]),
+    params: normalizeParams(groups[key]!),
   }))
 }
