@@ -58,7 +58,7 @@
     "@tsconfig/node24": "^24.0.4",
     "@types/node": "^24.12.2",
     "@vue/tsconfig": "^0.9.1",
-    "bumpp": "^11.0.1",
+    "bumpp": "^12.0.0",
     "eslint": "^10.2.0",
     "eslint-plugin-format": "^2.0.1",
     "happy-dom": "^20.8.9",
