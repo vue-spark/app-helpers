@@ -19,16 +19,18 @@ import App from './App.vue'
 const app = createApp(App)
 
 function mount() {
-  const parsed = parseUrl({ params: ['access_token'] })
+  const parsed = parseUrl({ paramGroups: ['access_token'] })
   if (parsed) {
-    localStorage.setItem('access_token', parsed.data.access_token)
+    localStorage.setItem('access_token', parsed.data.access_token!)
     history.replaceState(null, '', parsed.cleanUrl)
     app.mount('#app')
     return
   }
-  location.replace(
-    `http://sso-url/?redirect_uri=${removeUrlSearchParams(location.href, true)}`,
+  // `redirect_uri` 必须编码，否则地址中的 `#` 会被当作锚点而不发送给服务端
+  const redirectUri = encodeURIComponent(
+    removeUrlSearchParams(location.href, true),
   )
+  location.replace(`http://sso-url/?redirect_uri=${redirectUri}`)
 }
 
 mount()

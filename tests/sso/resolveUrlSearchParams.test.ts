@@ -18,8 +18,35 @@ describe.concurrent('resolveUrlSearchParams', () => {
     expect(result.get('key')).toBe('value')
   })
 
+  it('锚点前面的参数不被锚点污染', () => {
+    const result = resolveUrlSearchParams(
+      'https://example.com/page?access_token=abc123#/dashboard',
+    )
+    expect(result.get('access_token')).toBe('abc123')
+  })
+
+  it('hash 优先 - 锚点内存在查询串时忽略主体 search', () => {
+    const result = resolveUrlSearchParams(
+      'https://example.com/page?token=1#/route?tab=2',
+    )
+    expect(result.get('tab')).toBe('2')
+    expect(result.has('token')).toBe(false)
+  })
+
+  it('锚点内无查询串时解析主体 search', () => {
+    const result = resolveUrlSearchParams(
+      'https://example.com/page?token=1#/route',
+    )
+    expect(result.get('token')).toBe('1')
+  })
+
   it('无查询参数返回空实例', () => {
     const result = resolveUrlSearchParams('https://example.com')
+    expect(result.toString()).toBe('')
+  })
+
+  it('仅有锚点、没有任何查询串时返回空实例', () => {
+    const result = resolveUrlSearchParams('https://example.com/page#/dashboard')
     expect(result.toString()).toBe('')
   })
 
