@@ -1,7 +1,7 @@
 {
   "name": "@vue-spark/app-helpers",
   "type": "module",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "packageManager": "pnpm@10.34.6",
   "description": "Lightweight Helpers for Vue 3 Application Development.",
   "author": "leihaohao <https://github.com/l246804>",
