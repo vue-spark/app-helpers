@@ -2,7 +2,6 @@
   "name": "@vue-spark/app-helpers",
   "type": "module",
   "version": "0.4.0",
-  "packageManager": "pnpm@10.34.6",
   "description": "Lightweight Helpers for Vue 3 Application Development.",
   "author": "leihaohao <https://github.com/l246804>",
   "license": "MIT",
@@ -41,7 +40,8 @@
     "lint": "eslint . --cache --cache-location ./node_modules/.cache/.eslint-cache",
     "lint:fix": "pnpm run lint --fix",
     "release": "bumpp && pnpm publish",
-    "prepublishOnly": "pnpm run build"
+    "prepublishOnly": "pnpm run build",
+    "prepare": "skills-npm"
   },
   "peerDependencies": {
     "vue": "^3.5.0",
@@ -65,6 +65,7 @@
     "lint-staged": "^17.0.0",
     "prettier": "^3.8.2",
     "simple-git-hooks": "^2.13.1",
+    "skills-npm": "^4.0.0",
     "tsdown": "^0.23.0",
     "tsx": "^4.21.0",
     "typescript": "^6.0.2",
@@ -74,5 +75,28 @@
   },
   "simple-git-hooks": {
     "pre-commit": "npx lint-staged"
-  }
+  },
+  "skills": [
+    {
+      "source": "mattpocock/skills/skills/productivity",
+      "ref": "24fe0ef7737efae15c87225755e9f6f5965e4888",
+      "skills": [
+        "writing-for-agents"
+      ]
+    },
+    {
+      "source": "antfu/skills",
+      "ref": "feb0f3aba6566426f12230e7fc7a10d97c1293bb",
+      "skills": [
+        "antfu"
+      ]
+    },
+    {
+      "source": "ericlitman/open-pstack/plugins/pstack/skills",
+      "ref": "c5c8e237c324359a3d1929037da78fe66da3d1ed",
+      "skills": [
+        "unslop"
+      ]
+    }
+  ]
 }

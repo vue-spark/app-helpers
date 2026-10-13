@@ -1,0 +1,11 @@
+{
+  "version": 3,
+  "skills": {},
+  "remote": {
+    "unslop": {
+      "package": ".",
+      "source": "ericlitman/open-pstack/plugins/pstack/skills",
+      "ref": "c5c8e237c324359a3d1929037da78fe66da3d1ed"
+    }
+  }
+}

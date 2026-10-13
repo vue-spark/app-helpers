@@ -20,3 +20,6 @@ coverage
 *.njsproj
 *.sln
 *.sw?
+
+.agents/skills
+skills-lock.json
