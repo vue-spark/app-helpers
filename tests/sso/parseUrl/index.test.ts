@@ -61,17 +61,26 @@ describe.concurrent('parse-url', () => {
     expect(result?.cleanUrl).toBe('https://example.com?state=true')
   })
 
-  it('清理参数时保留锚点', () => {
+  it('清理参数时保留锚点与主体 search', () => {
     const result = parseUrl({
-      url: 'https://example.com/?access_token=abc123#/dashboard',
+      url: 'https://example.com/?from=menu#/dashboard?access_token=abc123',
       paramGroups: ['access_token'],
     })
 
     expect(result?.data.access_token).toBe('abc123')
-    expect(result?.cleanUrl).toBe('https://example.com/#/dashboard')
+    expect(result?.cleanUrl).toBe('https://example.com/?from=menu#/dashboard')
   })
 
-  it('hash 路由模式 - 解析锚点内参数并保留锚点', () => {
+  it('hash 路径内没有查询段时，主体 search 不作为参数来源', () => {
+    expect(
+      parseUrl({
+        url: 'https://example.com/?access_token=abc123#/dashboard',
+        paramGroups: ['access_token'],
+      }),
+    ).toBeNull()
+  })
+
+  it('hash 路径形态 - 解析锚点内参数并保留锚点', () => {
     const result = parseUrl({
       url: 'https://example.com/#/dashboard?access_token=abc123',
       paramGroups: ['access_token'],

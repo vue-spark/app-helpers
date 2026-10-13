@@ -29,48 +29,69 @@ describe.concurrent('removeUrlSearchParams', () => {
     expect(result).toBe('https://example.com')
   })
 
-  it('兼容 hash 模式 URL', () => {
-    const result = removeUrlSearchParams('https://example.com#hash?param=1', [
+  it('兼容 hash 路径 URL', () => {
+    const result = removeUrlSearchParams('https://example.com#/hash?param=1', [
       'param',
     ])
-    expect(result).toBe('https://example.com#hash')
+    expect(result).toBe('https://example.com#/hash')
   })
 
-  it('移除参数时保留 search 之后的锚点', () => {
+  it('普通锚点内的 `?` 不是查询串，不参与移除', () => {
+    expect(
+      removeUrlSearchParams('https://example.com#hash?param=1', ['param']),
+    ).toBe('https://example.com#hash?param=1')
+  })
+
+  it('主体 search 与普通锚点内的 `?` 并存时，移除作用于主体', () => {
+    expect(
+      removeUrlSearchParams(
+        'https://example.com/page?access_token=x&state=1#detail?x=1',
+        ['access_token'],
+      ),
+    ).toBe('https://example.com/page?state=1#detail?x=1')
+  })
+
+  it('hash 路径内没有查询段时，主体 search 不参与移除', () => {
+    const url = 'https://example.com/page?access_token=abc123#/dashboard'
+    expect(removeUrlSearchParams(url, ['access_token'])).toBe(url)
+    expect(removeUrlSearchParams(url, true)).toBe(url)
+  })
+
+  it('移除参数时保留 search 之后的锚点（hash 路径）', () => {
     const result = removeUrlSearchParams(
-      'https://example.com/page?access_token=abc123#/dashboard',
+      'https://example.com/page?from=menu#/dashboard?access_token=abc123',
       ['access_token'],
     )
-    expect(result).toBe('https://example.com/page#/dashboard')
+    expect(result).toBe('https://example.com/page?from=menu#/dashboard')
   })
 
-  it('保留锚点及剩余参数', () => {
+  it('保留锚点及剩余参数（hash 路径）', () => {
     const result = removeUrlSearchParams(
-      'https://example.com/?access_token=abc123&state=1#/dashboard',
+      'https://example.com/?from=menu#/dashboard?access_token=abc123&state=1',
       ['access_token'],
     )
-    expect(result).toBe('https://example.com/?state=1#/dashboard')
+    expect(result).toBe('https://example.com/?from=menu#/dashboard?state=1')
   })
 
-  it('移除所有参数时保留锚点', () => {
+  it('移除所有参数时保留锚点（hash 路径）', () => {
     const result = removeUrlSearchParams(
-      'https://example.com/?access_token=abc123#/dashboard',
+      'https://example.com/?from=menu#/dashboard?access_token=abc123',
       true,
     )
-    expect(result).toBe('https://example.com/#/dashboard')
+    expect(result).toBe('https://example.com/?from=menu#/dashboard')
   })
 
   it('hash 优先 - 保留锚点外的 search，仅移除锚点内参数', () => {
     const result = removeUrlSearchParams(
-      'https://example.com/page?token=1#/route?tab=2',
+      'https://example.com/page?token=1#/orders?tab=2',
       ['tab'],
     )
-    expect(result).toBe('https://example.com/page?token=1#/route')
+    expect(result).toBe('https://example.com/page?token=1#/orders')
   })
 
   it('处理 URL 对象输入并保留锚点', () => {
     const result = removeUrlSearchParams(
-      new URL('https://example.com/page?token=1#/dashboard'),
+      new URL('https://example.com/page#/dashboard?token=1'),
       ['token'],
     )
     expect(result).toBe('https://example.com/page#/dashboard')
