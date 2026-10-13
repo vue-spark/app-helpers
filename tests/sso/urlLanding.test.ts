@@ -9,12 +9,13 @@ import {
 /**
  * URL 参数「落点」核对矩阵
  *
- * 分五节：
+ * 分六节：
  * ① 移除：四类形态，锚点与 hash 路径都不丢
  * ② 解析：生效查询串的定位（仅 `hash` 路径取锚点查询段）
  * ③ 值内含 `?`：不得被误当作分隔符
  * ④ 写入落点：按「锚点是否 hash 路径」分流
  * ⑤ 逐字节稳定性：移除与写入都不重写无关内容
+ * ⑥ 复杂形态：hash 路径查询值里带完整 URL
  */
 
 const ORIGIN = 'https://h'
@@ -117,7 +118,7 @@ describe('① 移除参数：四类形态', () => {
     ).toBe('https://h/#/orders')
   })
 
-  it('hash 路径 + 锚点前有真实 search：search 与 fragment 两不相犯', () => {
+  it('hash 路径 + 锚点前有真实 search：只清锚点内的凭据', () => {
     expect(
       removeUrlSearchParams('https://h/?q=1#/orders?tab=1&access_token=x', [
         'access_token',
@@ -126,21 +127,18 @@ describe('① 移除参数：四类形态', () => {
   })
 
   it('hash 路径：只清锚点内的查询段，主体 search 不参与', () => {
-    expect(
-      removeUrlSearchParams(
-        'https://h/?access_token=body&q=1#/orders?access_token=hash&tab=1',
-        ['access_token'],
-      ),
-    ).toBe('https://h/?access_token=body&q=1#/orders?tab=1')
-    expect(
-      removeUrlSearchParams(
-        'https://h/?access_token=body&q=1#/orders?access_token=hash&tab=1',
-        true,
-      ),
-    ).toBe('https://h/?access_token=body&q=1#/orders')
+    // 严格 hash 优先的取舍：主体 search 里的凭据不在生效查询串内，既不解析也不移除。
+    const url =
+      'https://h/?access_token=body&q=1#/orders?access_token=hash&tab=1'
+    expect(removeUrlSearchParams(url, ['access_token'])).toBe(
+      'https://h/?access_token=body&q=1#/orders?tab=1',
+    )
+    expect(removeUrlSearchParams(url, true)).toBe(
+      'https://h/?access_token=body&q=1#/orders',
+    )
   })
 
-  it('hash 路径内有查询段时，主体 search 不作为参数来源', () => {
+  it('锚点内有查询段时以它为准，主体 search 不参与读取', () => {
     // 以 hash 路径为主：主体 search 原样保留，既不被读取也不被搬迁。
     const url = 'https://h/?access_token=x&next=/x#/sso/callback?step=2'
     expect(resolveUrlSearchParams(url).has('access_token')).toBe(false)
@@ -157,10 +155,10 @@ describe('① 移除参数：四类形态', () => {
     const url = 'https://h/?access_token=x#/orders'
     expect(resolveUrlSearchParams(url).has('access_token')).toBe(false)
     expect(removeUrlSearchParams(url, ['access_token'])).toBe(url)
-    // 写入仍落锚点内查询段，此后读写一致
-    expect(writeUrlSearchParams(url, [['access_token', 'X']])).toBe(
-      'https://h/?access_token=x#/orders?access_token=X',
-    )
+    // 写入仍落锚点内查询段，此后从 location.hash 读得到
+    const written = writeUrlSearchParams(url, [['access_token', 'X']])
+    expect(written).toBe('https://h/?access_token=x#/orders?access_token=X')
+    expect(resolveUrlSearchParams(written).get('access_token')).toBe('X')
   })
 
   it('锚点内的已编码文本不被二次编码', () => {
@@ -340,7 +338,7 @@ describe('④ 写入落点：按「锚点是否 hash 路径」分流', () => {
 
   it('写入结果必须能被平台解析器原样读回参数', () => {
     // 以 `new URL` 为第三方基准：写入后的地址，平台解析器必须看到同一个值。
-    // 这一条能同时抓住「参数落到 `#` 之后」——那种情况 search 为空。
+    // 参数落到 `#` 之后时 search 为空，这一条能抓住这种情况。
     for (const target of [
       'https://h/orders',
       'https://h/orders?tab=1',
@@ -495,7 +493,7 @@ describe('⑥ 复杂形态：hash 路径查询值里带完整 URL', () => {
     )
   })
 
-  it('移除只作用于锚点内查询段', () => {
+  it('移除只作用于生效查询串，主体 search 原样保留', () => {
     expect(removeUrlSearchParams(url, ['b'])).toBe(
       'http://xxx/a/b/?a=1#/c/d?c=http://xxxx/asd/#/cad?e=1#detail?d=3',
     )

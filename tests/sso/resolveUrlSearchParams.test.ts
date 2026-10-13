@@ -10,51 +10,6 @@ describe.concurrent('resolveUrlSearchParams', () => {
     expect(result.get('state')).toBe('true')
   })
 
-  it('处理 hash 路径锚点中的参数', () => {
-    const result = resolveUrlSearchParams(
-      'https://example.com#/hash?param=1&key=value',
-    )
-    expect(result.get('param')).toBe('1')
-    expect(result.get('key')).toBe('value')
-  })
-
-  it('普通锚点内的 `?` 不是查询串', () => {
-    const result = resolveUrlSearchParams(
-      'https://example.com#hash?param=1&key=value',
-    )
-    expect(result.toString()).toBe('')
-  })
-
-  it('普通锚点内的 `?` 不遮蔽主体 search', () => {
-    const result = resolveUrlSearchParams(
-      'https://example.com/page?body=1#detail?x=1',
-    )
-    expect(Object.fromEntries(result)).toEqual({ body: '1' })
-  })
-
-  it('hash 路径内没有查询段时，主体 search 不参与', () => {
-    const result = resolveUrlSearchParams(
-      'https://example.com/page?access_token=abc123#/dashboard',
-    )
-    expect(result.has('access_token')).toBe(false)
-  })
-
-  it('hash 路径优先 - 锚点内有查询段时主体 search 被忽略', () => {
-    const result = resolveUrlSearchParams(
-      'https://example.com/page?token=1#/orders?tab=2',
-    )
-    expect(result.get('tab')).toBe('2')
-    expect(result.has('token')).toBe(false)
-  })
-
-  it('hash 路径：取锚点内查询段', () => {
-    const result = resolveUrlSearchParams(
-      'https://example.com/page?token=1#/orders?tab=2',
-    )
-    expect(result.get('tab')).toBe('2')
-    expect(result.has('token')).toBe(false)
-  })
-
   it('无查询参数返回空实例', () => {
     const result = resolveUrlSearchParams('https://example.com')
     expect(result.toString()).toBe('')

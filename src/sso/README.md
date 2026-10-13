@@ -69,31 +69,27 @@ writeUrlSearchParams('https://h/#/orders?tab=1', [['access_token', t]])
 未被移除的参数，因此移除未命中的参数不会改动其它参数的写法
 （仅当移除后查询串为空时，孤立的 `?` 会被去掉）。
 
-### 生效查询串的定位（hash 路径优先）
+### 生效查询串的定位
 
 | 地址形态                     | 目标应用读者      | 生效查询串                                     |
 | ---------------------------- | ----------------- | ---------------------------------------------- |
 | `/orders?a=1`                | `location.search` | 主体 `search`                                  |
 | `/page#detail`               | `location.search` | 主体 `search`                                  |
-| `/page#detail?x=1`           | `location.search` | **无**（`?x=1` 是锚点原文）                    |
-| `/#/orders`                  | `location.hash`   | **空**（主体 `search` 不参与）                 |
+| `/page#detail?x=1`           | `location.search` | 主体 `search`（`?x=1` 是锚点原文）             |
+| `/#/orders`                  | `location.hash`   | 空（主体 `search` 不参与）                     |
 | `/#/orders?tab=1`            | `location.hash`   | 锚点内查询段（主体 `search` 不参与）           |
 | `/#/orders?tab=1#detail?d=3` | `location.hash`   | 锚点内查询段 `tab=1`；`#detail?d=3` 是锚点部分 |
 
-- **`hash` 路径优先且互斥**：只要锚点以 `#/`、`#!` 开头，读写删一律以锚点内的查询段
-  为准，主体 `search` **完全不参与**；锚点内没有查询段时生效查询串就是空串
-  （此时应用只解析 `location.hash`，主体 `search` 对它不可见）。
-- **写入落点**：`#/`、`#!` → 锚点内查询段（原本没有查询段时插在锚点内、锚点部分
-  之前），否则 → 主体 `search`。写完后读写删作用于同一处。
-- **锚点部分忽略**：`hash` 路径查询段之后出现**非路径形式**的 `#`（如 `#detail?d=3`），
-  其后内容（含其中的 `?query`）不算参数，但逐字节保留。
-- **普通锚点内的 `?` 不是查询串**：`#detail?d=3` 既不解析、不移除，也不会遮蔽
-  主体 `search`（与 WHATWG URL 及主流前端框架解析 `location.hash` 的判据一致：
-  `?` 落在 `#` 之后就不作为分隔符）。
-- **查询值可以放完整 URL**（含 `#`、`?`，如 `c=http://x/#/cad?e=1`）：值里的
-  `#/`、`#!` 是嵌套地址里的路径标记，仍属于值。写入时值按 `URLSearchParams` 规则
-  编码（`#` → `%23`、`?` → `%3F`），读取时按同一规则解码；未被写入/移除的原文
-  保持原样，不做二次编码。
+`#/`、`#!` 锚点优先且互斥：读写删一律取锚点内的查询段，主体 `search` 完全不参与，
+锚点内没有查询段时生效查询串就是空串。这类地址的应用只解析 `location.hash`，主体
+`search` 对它不可见，因此授权服务器拼在 `#` 之前的参数（`https://h/?access_token=x#/orders`）
+既不参与解析，也不参与移除。
+
+写入恒落在锚点内的查询段（原本没有查询段就插在锚点部分之前），所以写进去的参数一定
+读得回。
+
+普通锚点内的 `?` 落在 `#` 之后，不构成查询串，也不会遮蔽主体 `search`
+（与 WHATWG URL 及主流前端框架解析 `location.hash` 的判据一致）。
 
 ```ts
 const url =
@@ -109,14 +105,18 @@ writeUrlSearchParams(url, [['access_token', t]])
 removeUrlSearchParams(url, ['b'])
 // => 'http://xxx/a/b/?a=1#/c/d?c=http://xxxx/asd/#/cad?e=1#detail?d=3'
 
-// 只要有 #/ 就不看主体 search：锚点内没有查询段时生效查询串为空
+// 有 #/ 就不看主体 search：锚点内没有查询段时生效查询串为空
 resolveUrlSearchParams('https://h/?access_token=x#/orders').has('access_token')
 // => false
 ```
 
-普通锚点内的历史错误形态 `https://h/page#detail?access_token=x`（凭据被拼进普通
-锚点）整体不作为参数来源，因此既解析不到、也不会被 `removeUrlSearchParams` 移除；
-迁移期请改用 `writeUrlSearchParams` 重新生成地址。
+### 已知限制
 
-同理，`#/`、`#!` 形态下主体 `search` 里的参数（如授权服务器按 OAuth 规范把参数
-拼到 `#` 之前）也不作为参数来源；需要目标应用读到的参数请写入锚点内查询段。
+普通锚点内的历史错误形态 `https://h/page#detail?access_token=x`（凭据被拼进普通
+锚点）里的 `?access_token=x` 是锚点原文，不构成查询串，因此既解析不到，也不会被
+`removeUrlSearchParams` 移除。迁移期请改用 `writeUrlSearchParams` 重新生成地址。
+
+查询值里的 `#` 只有在构成路径形式（`#/`、`#!`）时才属于值。写入的值会把 `#` 编码成
+`%23`，读回时还原，往返总是安全的；但手工或服务端拼出、未编码的普通 `#fragment`
+会被当作锚点部分，例如 `?c=http://y/#detail` 读回 `c` 得到 `http://y/`。这类值需要
+自行编码成 `%23`。
