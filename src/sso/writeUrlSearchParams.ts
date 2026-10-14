@@ -9,7 +9,7 @@ function mergeRawQuery(
 ): string {
   const owned = new Map(entries)
   const kept = splitRawQuery(rawQuery).filter(
-    (segment) => !owned.has(rawQueryKey(segment)),
+    segment => !owned.has(rawQueryKey(segment)),
   )
   // 交给 `URLSearchParams` 序列化，编码规则与其它 API 完全一致
   const added = [...owned].map(([key, value]) =>

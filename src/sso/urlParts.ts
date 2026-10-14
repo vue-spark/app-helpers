@@ -80,9 +80,9 @@ function splitIfHashPath(raw: string, hashIndex: number): UrlParts | null {
  */
 function splitSearchQuery(raw: string, hashIndex: number): UrlParts {
   const searchQueryIndex = raw.indexOf('?')
-  const hasSearchQuery =
-    searchQueryIndex !== -1 &&
-    (hashIndex === -1 || searchQueryIndex < hashIndex)
+  const hasSearchQuery
+    = searchQueryIndex !== -1
+      && (hashIndex === -1 || searchQueryIndex < hashIndex)
 
   if (!hasSearchQuery) {
     // 锚点原文留在 `after`，重建时才能插到 `#` 之前

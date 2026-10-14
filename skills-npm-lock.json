@@ -1,11 +1,22 @@
 {
   "version": 3,
-  "skills": {},
+  "skills": {
+    "taze": {
+      "package": "taze",
+      "version": "21.3.0",
+      "skillPath": "skills/taze/SKILL.md"
+    }
+  },
   "remote": {
     "unslop": {
       "package": ".",
       "source": "ericlitman/open-pstack/plugins/pstack/skills",
       "ref": "c5c8e237c324359a3d1929037da78fe66da3d1ed"
+    },
+    "writing-for-agents": {
+      "package": ".",
+      "source": "mattpocock/skills/skills/productivity",
+      "ref": "24fe0ef7737efae15c87225755e9f6f5965e4888"
     }
   }
 }

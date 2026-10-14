@@ -1,6 +1,6 @@
+/// <reference lib="dom" />
 import type { ParamRaw } from './param'
 import type { ParamGroup, ParamGroupKey, ParamGroupsRaw } from './paramGroup'
-import { isArray } from '@/utils'
 import { readUrlSearchParams } from '../readUrlSearchParams'
 import { removeUrlSearchParams } from '../removeUrlSearchParams'
 import { normalizeParamGroups } from './paramGroup'
@@ -66,7 +66,7 @@ const defaultGroupKey: ParamGroupKey = Symbol('default group')
  * ```
  */
 export function parseUrl(options: ParseUrlOptions): ParseUrlResult | null {
-  const { url = window.location.href, paramGroups: paramGroupsRaw } = options
+  const { url = globalThis.location.href, paramGroups: paramGroupsRaw } = options
   const searchParams = readUrlSearchParams(url)
 
   // If there are no parameters, return null
@@ -75,7 +75,7 @@ export function parseUrl(options: ParseUrlOptions): ParseUrlResult | null {
   }
 
   const paramGroups = normalizeParamGroups(
-    isArray(paramGroupsRaw)
+    Array.isArray(paramGroupsRaw)
       ? { [defaultGroupKey]: paramGroupsRaw }
       : paramGroupsRaw,
   )
@@ -87,7 +87,7 @@ export function parseUrl(options: ParseUrlOptions): ParseUrlResult | null {
         rawUrl: url,
         cleanUrl: removeUrlSearchParams(
           url,
-          group.params.map((p) => p.name),
+          group.params.map(p => p.name),
         ),
       }
     }
@@ -114,8 +114,8 @@ function validateGroup(
   group: ParamGroup,
 ): boolean {
   return (
-    group.params.length > 0 &&
-    group.params.every((param) => {
+    group.params.length > 0
+    && group.params.every((param) => {
       if (!param.required) {
         return true
       }

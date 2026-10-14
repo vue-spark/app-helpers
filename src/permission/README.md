@@ -64,12 +64,12 @@ interface Permission {
 
 通过组件 `<PermissionGuard />` 来进行权限控制。
 
-```html
+```vue
 <script setup lang="ts">
-  import { usePermission, PermissionGuard } from '@vue-spark/app-helpers/permission'
+import { PermissionGuard, usePermission } from '@vue-spark/app-helpers/permission'
 
-  const permission = usePermission()
-  permission.set(['list:add', 'list:edit', 'list:delete'])
+const permission = usePermission()
+permission.set(['list:add', 'list:edit', 'list:delete'])
 </script>
 
 <template>
@@ -84,35 +84,41 @@ interface Permission {
 
 通过 `v-permission` 指令来进行权限控制。
 
-```html
+```vue
 <script setup lang="ts">
-  import { vPermission, usePermission } from '@vue-spark/app-helpers/permission'
+import { usePermission, vPermission } from '@vue-spark/app-helpers/permission'
 
-  const permission = usePermission()
-  permission.set(['list:add', 'list:edit', 'list:delete'])
+const permission = usePermission()
+permission.set(['list:add', 'list:edit', 'list:delete'])
 </script>
 
 <template>
   <!-- 仅当用户有权限时，才显示按钮 -->
-  <button v-permission:or="['list:delete']">删除</button>
+  <button v-permission:or="['list:delete']">
+    删除
+  </button>
 </template>
 ```
 
 ### usePermission 或 $permission
 
-```html
+```vue
 <script setup lang="ts">
-  import { usePermission } from '@vue-spark/app-helpers/permission'
+import { usePermission } from '@vue-spark/app-helpers/permission'
 
-  const permission = usePermission()
-  permission.set(['list:add', 'list:edit', 'list:delete'])
+const permission = usePermission()
+permission.set(['list:add', 'list:edit', 'list:delete'])
 </script>
 
 <template>
   <!-- 仅当用户有权限时，才显示按钮 -->
-  <button v-if="permission.check(['list:delete'])">删除</button>
+  <button v-if="permission.check(['list:delete'])">
+    删除
+  </button>
 
   <!-- 等价于 -->
-  <button v-if="$permission.check('list:delete')">删除</button>
+  <button v-if="$permission.check('list:delete')">
+    删除
+  </button>
 </template>
 ```

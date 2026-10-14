@@ -57,11 +57,12 @@ const PermissionGuardImpl = /* #__PURE__ */ defineComponent({
  * </template>
  * ```
  */
+// eslint-disable-next-line slop/no-chained-type-assertions
 export const PermissionGuard = PermissionGuardImpl as unknown as {
   new (): {
-    $props: AllowedComponentProps &
-      ComponentCustomProps &
-      VNodeProps &
-      PermissionGuardProps
+    $props: AllowedComponentProps
+      & ComponentCustomProps
+      & VNodeProps
+      & PermissionGuardProps
   }
 }

@@ -114,7 +114,7 @@ describe('splitUrl', () => {
         'https://h/?q=1#/orders',
         'https://h/page#detail?x=1',
         'https://h/?redirect=/login?from=a#detail',
-      ].map((url) => ({ url, parts: splitUrl(url) })),
+      ].map(url => ({ url, parts: splitUrl(url) })),
     ).toMatchSnapshot()
   })
 })

@@ -125,8 +125,8 @@ describe('移除参数：四类形态', () => {
 
   it('hash 路径：只清锚点内的查询段，主体 search 不参与', () => {
     // 严格 hash 优先的取舍：主体 search 里的凭据不在生效查询串内，既不解析也不移除
-    const url =
-      'https://h/?access_token=body&q=1#/orders?access_token=hash&tab=1'
+    const url
+      = 'https://h/?access_token=body&q=1#/orders?access_token=hash&tab=1'
     expect(removeUrlSearchParams(url, ['access_token'])).toBe(
       'https://h/?access_token=body&q=1#/orders?tab=1',
     )
@@ -237,8 +237,8 @@ describe('逐字节稳定性：不重写无关内容', () => {
 describe('复杂形态：hash 路径查询值里带完整 URL', () => {
   // 主体 `?a=1` 被忽略；锚点部分 `#detail?d=3` 被忽略但保留；
   // `c` 的值是完整 URL，内部还有 `#/cad?e=1`（嵌套路径标记，属于值）
-  const url =
-    'http://xxx/a/b/?a=1#/c/d?b=2&c=http://xxxx/asd/#/cad?e=1#detail?d=3'
+  const url
+    = 'http://xxx/a/b/?a=1#/c/d?b=2&c=http://xxxx/asd/#/cad?e=1#detail?d=3'
 
   it('移除只针对 hash 路径查询段', () => {
     expect(removeUrlSearchParams(url, ['b'])).toBe(
@@ -270,7 +270,7 @@ describe('移除与写入互逆', () => {
         'https://h/orders?tab=1&access_token=x#detail',
         'https://h/#/orders?tab=1&access_token=x',
         'https://h/?access_token=body&q=1#/orders?access_token=hash&tab=1',
-      ].map((url) => ({
+      ].map(url => ({
         url,
         removed: removeUrlSearchParams(url, ['access_token']),
         removedAll: removeUrlSearchParams(url, true),

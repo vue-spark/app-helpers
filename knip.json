@@ -1,6 +1,5 @@
 {
   "$schema": "https://unpkg.com/knip@6/schema.json",
-  "project": ["src/**/*.ts", "test/**/*.ts"],
-  "ignore": ["**/__snapshots__/**"],
-  "ignoreDependencies": ["vue-router"]
+  "project": ["src/**/*.ts"],
+  "ignoreDependencies": ["vue-router", "taze"]
 }

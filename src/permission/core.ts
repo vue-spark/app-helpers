@@ -1,6 +1,6 @@
 import type { App, ShallowReactive } from 'vue'
+import { toArray } from '@antfu/utils'
 import { effectScope, shallowRef, triggerRef } from 'vue'
-import { ensureArray } from '@/utils'
 import { permissionKey } from './injection'
 
 export const PERMISSION_CODE_ALL = '*'
@@ -42,18 +42,18 @@ export interface PermissionOptions {
 export function createPermission(options: PermissionOptions = {}): Permission {
   const scope = effectScope(true)
   const codeSet = scope.run(() =>
-    shallowRef(new Set(ensureArray(options.initialCodes ?? []))),
+    shallowRef(new Set(toArray(options.initialCodes ?? []))),
   )!
   const permission: Permission = {
     get codes() {
       return [...codeSet.value]
     },
     add(codes) {
-      ensureArray(codes).forEach((code) => codeSet.value.add(code))
+      toArray(codes).forEach(code => codeSet.value.add(code))
       triggerRef(codeSet)
     },
     set(codes) {
-      codeSet.value = new Set(ensureArray(codes))
+      codeSet.value = new Set(toArray(codes))
     },
     clear() {
       codeSet.value = new Set()
@@ -67,7 +67,7 @@ export function createPermission(options: PermissionOptions = {}): Permission {
         return false
       }
 
-      return ensureArray(codes)[op === 'and' ? 'every' : 'some']((code) =>
+      return toArray(codes)[op === 'and' ? 'every' : 'some'](code =>
         codeSet.value.has(code),
       )
     },

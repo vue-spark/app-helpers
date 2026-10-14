@@ -26,7 +26,7 @@ export function removeUrlSearchParams(
 
   const target = new Set(params)
   const kept = splitRawQuery(parts.query).filter(
-    (segment) => !target.has(rawQueryKey(segment)),
+    segment => !target.has(rawQueryKey(segment)),
   )
 
   return joinUrl(parts, kept.join('&'))

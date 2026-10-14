@@ -162,8 +162,8 @@ describe('逐字节稳定性：不重写无关内容', () => {
 describe('复杂形态：hash 路径查询值里带完整 URL', () => {
   // 主体 `?a=1` 被忽略；锚点部分 `#detail?d=3` 被忽略但保留；
   // `c` 的值是完整 URL，内部还有 `#/cad?e=1`（嵌套路径标记，属于值）
-  const url =
-    'http://xxx/a/b/?a=1#/c/d?b=2&c=http://xxxx/asd/#/cad?e=1#detail?d=3'
+  const url
+    = 'http://xxx/a/b/?a=1#/c/d?b=2&c=http://xxxx/asd/#/cad?e=1#detail?d=3'
 
   it('写入插在锚点内查询段末尾，同名替换且幂等', () => {
     expect(writeUrlSearchParams(url, [['access_token', 'T']])).toBe(

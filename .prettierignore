@@ -1,3 +1,0 @@
-# tsnapi 生成的公开 API 快照按固定格式写入并与 dist 逐字节比较，
-# 重排（去掉分号、合并行）会让 `test/api-snapshot.test.ts` 直接失败
-test/__snapshots__

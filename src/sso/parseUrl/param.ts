@@ -1,5 +1,6 @@
-import { assign, isObject } from '@/utils'
+import { isObject } from '@antfu/utils'
 
+// eslint-disable-next-line slop/no-trivial-type-aliases
 export type ParamName = string
 
 export interface Param {
@@ -17,7 +18,7 @@ export interface Param {
 export type ParamRaw = ParamName | Param
 
 export function normalizeParams(params: ParamRaw[]): Param[] {
-  return params.map((p) =>
-    assign({ required: true }, !isObject(p) ? { name: p } : p),
+  return params.map(p =>
+    Object.assign({ required: true }, !isObject(p) ? { name: p } : p),
   )
 }

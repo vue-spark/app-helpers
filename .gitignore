@@ -1,25 +1,15 @@
-# Logs
-logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
-
-node_modules
+.cache
 .DS_Store
-dist
-coverage
-*.local
-
-# Editor directories and files
+.githooks
 .idea
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
-
+*.log
+*.tgz
+coverage
+dist
+lib-cov
+logs
+node_modules
+temp
+.eslintcache
 .agents/skills
 skills-lock.json

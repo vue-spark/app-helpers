@@ -98,8 +98,8 @@ writeUrlSearchParams('https://h/#/orders?tab=1', [['access_token', t]])
 （与 WHATWG URL 及主流前端框架解析 `location.hash` 的判据一致）。
 
 ```ts
-const url =
-  'http://xxx/a/b/?a=1#/c/d?b=2&c=http://xxxx/asd/#/cad?e=1#detail?d=3'
+const url
+  = 'http://xxx/a/b/?a=1#/c/d?b=2&c=http://xxxx/asd/#/cad?e=1#detail?d=3'
 
 readUrlSearchParams(url)
 // => { b: '2', c: 'http://xxxx/asd/#/cad?e=1' }
