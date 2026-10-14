@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "skills": {
+    "taze": {
+      "source": "taze",
+      "sourceType": "node_modules",
+      "skillPath": "skills/taze/SKILL.md",
+      "version": "21.3.0",
+      "computedHash": "e73157db14135aaba5e2a1577b2a6627211142e57a7c4413229505313eedab72"
+    }
+  }
+}

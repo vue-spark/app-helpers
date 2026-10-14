@@ -21,7 +21,7 @@ allowBuilds:
 
 catalogs:
   agentic:
-    skills-npm: ^4.0.0
+    skills: ^1.7.2
   cli:
     '@antfu/eslint-config': ^9.5.1
     '@antfu/ni': ^30.6.0

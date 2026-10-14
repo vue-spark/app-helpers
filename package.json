@@ -45,7 +45,7 @@
     "test": "pnpm run build && vitest",
     "typecheck": "tsc",
     "ci": "pnpm run lint && pnpm run typecheck && pnpm run knip && pnpm run test --run",
-    "prepare": "git config core.hooksPath .githooks && simple-git-hooks && skills-npm"
+    "prepare": "git config core.hooksPath .githooks && simple-git-hooks && skills experimental_sync -y -a universal"
   },
   "scripts-info": {
     "build": "Build the library for publishing",
@@ -82,7 +82,7 @@
     "nano-staged": "catalog:cli",
     "publint": "catalog:cli",
     "simple-git-hooks": "catalog:cli",
-    "skills-npm": "catalog:agentic",
+    "skills": "catalog:agentic",
     "taze": "catalog:cli",
     "tsdown": "catalog:cli",
     "tsdown-stale-guard": "catalog:testing",
@@ -97,21 +97,18 @@
   "skills": [
     {
       "source": "mattpocock/skills/skills/productivity",
-      "ref": "24fe0ef7737efae15c87225755e9f6f5965e4888",
       "skills": [
         "writing-for-agents"
       ]
     },
     {
       "source": "antfu/skills",
-      "ref": "feb0f3aba6566426f12230e7fc7a10d97c1293bb",
       "skills": [
         "antfu"
       ]
     },
     {
       "source": "ericlitman/open-pstack/plugins/pstack/skills",
-      "ref": "c5c8e237c324359a3d1929037da78fe66da3d1ed",
       "skills": [
         "unslop"
       ]
