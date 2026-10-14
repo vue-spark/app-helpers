@@ -21,7 +21,8 @@
     "sso"
   ],
   "exports": {
-    "./*": "./dist/*/index.js",
+    "./permission": "./dist/permission/index.js",
+    "./sso": "./dist/sso/index.js",
     "./package.json": "./package.json"
   },
   "files": [
@@ -34,13 +35,15 @@
   "scripts": {
     "dev": "tsdown --watch",
     "build": "tsdown",
-    "test": "vitest",
-    "typecheck": "tsc --noEmit",
+    "test": "pnpm run build && vitest",
+    "typecheck": "tsc -b --noEmit",
+    "knip": "knip",
     "format": "prettier . --write --cache --cache-location ./node_modules/.cache/.prettier-cache",
     "lint": "eslint . --cache --cache-location ./node_modules/.cache/.eslint-cache",
     "lint:fix": "pnpm run lint --fix",
     "release": "bumpp && pnpm publish",
     "prepublishOnly": "pnpm run build",
+    "ci": "pnpm run lint && pnpm run typecheck && pnpm run knip && pnpm run test --run",
     "prepare": "skills-npm"
   },
   "peerDependencies": {
@@ -62,11 +65,14 @@
     "eslint": "^10.2.0",
     "eslint-plugin-format": "^2.0.1",
     "happy-dom": "^21.0.0",
+    "knip": "^6.41.0",
     "lint-staged": "^17.0.0",
     "prettier": "^3.8.2",
     "simple-git-hooks": "^2.13.1",
     "skills-npm": "^4.0.0",
     "tsdown": "^0.23.0",
+    "tsdown-stale-guard": "^0.1.3",
+    "tsnapi": "^1.5.0",
     "tsx": "^4.21.0",
     "typescript": "^6.0.2",
     "vitest": "^4.1.4",

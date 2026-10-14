@@ -1,0 +1,25 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`parse-url > 返回完整解析结果快照 1`] = `
+{
+  "cleanUrl": "https://example.com",
+  "data": {
+    "access_token": "abc123",
+    "state": "true",
+  },
+  "group": {
+    "key": "success",
+    "params": [
+      {
+        "name": "access_token",
+        "required": true,
+      },
+      {
+        "name": "state",
+        "required": false,
+      },
+    ],
+  },
+  "rawUrl": "https://example.com?access_token=abc123&state=true",
+}
+`;

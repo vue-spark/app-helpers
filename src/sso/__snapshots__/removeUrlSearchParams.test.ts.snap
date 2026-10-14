@@ -1,0 +1,26 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`移除与写入互逆 > 成对结果快照 1`] = `
+[
+  {
+    "removed": "https://h/orders?tab=1",
+    "removedAll": "https://h/orders",
+    "url": "https://h/orders?tab=1&access_token=x",
+  },
+  {
+    "removed": "https://h/orders?tab=1#detail",
+    "removedAll": "https://h/orders#detail",
+    "url": "https://h/orders?tab=1&access_token=x#detail",
+  },
+  {
+    "removed": "https://h/#/orders?tab=1",
+    "removedAll": "https://h/#/orders",
+    "url": "https://h/#/orders?tab=1&access_token=x",
+  },
+  {
+    "removed": "https://h/?access_token=body&q=1#/orders?tab=1",
+    "removedAll": "https://h/?access_token=body&q=1#/orders",
+    "url": "https://h/?access_token=body&q=1#/orders?access_token=hash&tab=1",
+  },
+]
+`;

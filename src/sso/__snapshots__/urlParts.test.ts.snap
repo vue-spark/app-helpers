@@ -1,0 +1,54 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`splitUrl > 分段与生效查询串对照表 1`] = `
+[
+  {
+    "parts": {
+      "after": "",
+      "before": "https://h/orders",
+      "query": "tab=1",
+    },
+    "url": "https://h/orders?tab=1",
+  },
+  {
+    "parts": {
+      "after": "#detail",
+      "before": "https://h/orders",
+      "query": "tab=1",
+    },
+    "url": "https://h/orders?tab=1#detail",
+  },
+  {
+    "parts": {
+      "after": "",
+      "before": "https://h/#/orders",
+      "query": "tab=1",
+    },
+    "url": "https://h/#/orders?tab=1",
+  },
+  {
+    "parts": {
+      "after": "",
+      "before": "https://h/?q=1#/orders",
+      "query": "",
+    },
+    "url": "https://h/?q=1#/orders",
+  },
+  {
+    "parts": {
+      "after": "#detail?x=1",
+      "before": "https://h/page",
+      "query": "",
+    },
+    "url": "https://h/page#detail?x=1",
+  },
+  {
+    "parts": {
+      "after": "#detail",
+      "before": "https://h/",
+      "query": "redirect=/login?from=a",
+    },
+    "url": "https://h/?redirect=/login?from=a#detail",
+  },
+]
+`;

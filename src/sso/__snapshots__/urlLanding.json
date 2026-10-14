@@ -1,0 +1,102 @@
+[
+  {
+    "url": "https://h/orders",
+    "written": "https://h/orders?access_token=TOKEN",
+    "search": {
+      "access_token": "TOKEN"
+    },
+    "hash": {},
+    "anchor": ""
+  },
+  {
+    "url": "https://h/orders?tab=1",
+    "written": "https://h/orders?tab=1&access_token=TOKEN",
+    "search": {
+      "tab": "1",
+      "access_token": "TOKEN"
+    },
+    "hash": {},
+    "anchor": ""
+  },
+  {
+    "url": "https://h/page#detail",
+    "written": "https://h/page?access_token=TOKEN#detail",
+    "search": {
+      "access_token": "TOKEN"
+    },
+    "hash": {},
+    "anchor": "#detail"
+  },
+  {
+    "url": "https://h/page?from=menu#detail",
+    "written": "https://h/page?from=menu&access_token=TOKEN#detail",
+    "search": {
+      "from": "menu",
+      "access_token": "TOKEN"
+    },
+    "hash": {},
+    "anchor": "#detail"
+  },
+  {
+    "url": "https://h/orders?tab=1&access_token=x#detail",
+    "written": "https://h/orders?tab=1&access_token=TOKEN#detail",
+    "search": {
+      "tab": "1",
+      "access_token": "TOKEN"
+    },
+    "hash": {},
+    "anchor": "#detail"
+  },
+  {
+    "url": "https://h/#/orders?tab=1",
+    "written": "https://h/#/orders?tab=1&access_token=TOKEN",
+    "search": {},
+    "hash": {
+      "tab": "1",
+      "access_token": "TOKEN"
+    },
+    "anchor": null
+  },
+  {
+    "url": "https://h/#/orders",
+    "written": "https://h/#/orders?access_token=TOKEN",
+    "search": {},
+    "hash": {
+      "access_token": "TOKEN"
+    },
+    "anchor": null
+  },
+  {
+    "url": "https://h/?q=1#/orders?tab=1",
+    "written": "https://h/?q=1#/orders?tab=1&access_token=TOKEN",
+    "search": {
+      "q": "1"
+    },
+    "hash": {
+      "tab": "1",
+      "access_token": "TOKEN"
+    },
+    "anchor": null
+  },
+  {
+    "url": "https://h/page#detail?x=1",
+    "written": "https://h/page?access_token=TOKEN#detail?x=1",
+    "search": {
+      "access_token": "TOKEN"
+    },
+    "hash": {
+      "x": "1"
+    },
+    "anchor": "#detail?x=1"
+  },
+  {
+    "url": "https://h/?redirect=/login?from=a#detail",
+    "written": "https://h/?redirect=/login?from=a&access_token=TOKEN#detail",
+    "search": {
+      "redirect": "/login?from=a",
+      "access_token": "TOKEN"
+    },
+    "hash": {},
+    "anchor": "#detail"
+  }
+]

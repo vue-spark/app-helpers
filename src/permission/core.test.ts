@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { createPermission, PERMISSION_CODE_ALL } from '../../src/permission'
+import { createPermission, PERMISSION_CODE_ALL } from './core'
 
 describe.concurrent('core', () => {
   it('初始化权限', () => {

@@ -1,0 +1,14 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`复杂形态：hash 路径查询值里带完整 URL > 读取结果快照 1`] = `
+[
+  [
+    "b",
+    "2",
+  ],
+  [
+    "c",
+    "http://xxxx/asd/#/cad?e=1",
+  ],
+]
+`;
