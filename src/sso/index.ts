@@ -1,4 +1,5 @@
 export * from './parseUrl'
+export * from './readUrlSearchParams'
 export * from './removeUrlSearchParams'
 export * from './resolveUrlSearchParams'
 export { isHashPath } from './urlParts'

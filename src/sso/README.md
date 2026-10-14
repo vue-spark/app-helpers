@@ -12,7 +12,11 @@ npm i @vue-spark/app-helpers
 
 ```ts
 // src/main.ts
-import { parseUrl, removeUrlSearchParams } from '@vue-spark/app-helpers/sso'
+import {
+  parseUrl,
+  removeUrlSearchParams,
+  writeUrlSearchParams,
+} from '@vue-spark/app-helpers/sso'
 import { createApp } from 'vue'
 import App from './App.vue'
 
@@ -26,11 +30,13 @@ function mount() {
     app.mount('#app')
     return
   }
-  // `redirect_uri` 必须编码，否则地址中的 `#` 会被当作锚点而不发送给服务端
-  const redirectUri = encodeURIComponent(
-    removeUrlSearchParams(location.href, true),
+  // `redirect_uri` 交给 `writeUrlSearchParams` 编码：地址里的 `#`、`?`、`&` 会被
+  // 写成 `%23`、`%3F`、`%26`，`#` 不会被当成锚点丢掉，服务端收得到完整回跳地址
+  location.replace(
+    writeUrlSearchParams('http://sso-url/', [
+      ['redirect_uri', removeUrlSearchParams(location.href, true)],
+    ]),
   )
-  location.replace(`http://sso-url/?redirect_uri=${redirectUri}`)
 }
 
 mount()
@@ -95,7 +101,7 @@ writeUrlSearchParams('https://h/#/orders?tab=1', [['access_token', t]])
 const url =
   'http://xxx/a/b/?a=1#/c/d?b=2&c=http://xxxx/asd/#/cad?e=1#detail?d=3'
 
-resolveUrlSearchParams(url)
+readUrlSearchParams(url)
 // => { b: '2', c: 'http://xxxx/asd/#/cad?e=1' }
 //    主体 ?a=1 与锚点部分 #detail?d=3 都不参与
 
@@ -106,8 +112,17 @@ removeUrlSearchParams(url, ['b'])
 // => 'http://xxx/a/b/?a=1#/c/d?c=http://xxxx/asd/#/cad?e=1#detail?d=3'
 
 // 有 #/ 就不看主体 search：锚点内没有查询段时生效查询串为空
-resolveUrlSearchParams('https://h/?access_token=x#/orders').has('access_token')
+readUrlSearchParams('https://h/?access_token=x#/orders').has('access_token')
 // => false
+```
+
+读取、写入、移除三个函数的动词统一为 `read`、`write`、`remove`，落点判据共用一套
+（见上表）。旧名 `resolveUrlSearchParams` 标了 `@deprecated`，本版本仍可使用，下个
+次版本移除：
+
+```diff
+- import { resolveUrlSearchParams } from '@vue-spark/app-helpers/sso'
++ import { readUrlSearchParams } from '@vue-spark/app-helpers/sso'
 ```
 
 ### 已知限制

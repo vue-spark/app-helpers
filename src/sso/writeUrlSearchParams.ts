@@ -31,7 +31,7 @@ function mergeRawQuery(
  * | `hash` 路径 `/#/orders` | 锚点内的查询段 | `/#/orders?a=1` |
  *
  * `hash` 路径恒写进锚点内的查询段，因此写进去的参数一定读得回
- * （{@link resolveUrlSearchParams}），即便地址上原本有主体 `search`。同名的已有
+ * （{@link readUrlSearchParams}），即便地址上原本有主体 `search`。同名的已有
  * 参数会被替换，其余内容按原始文本保留，不改写 `%20`、`+` 等既有写法。
  *
  * 写入的值按 `URLSearchParams` 规则编码，`#`、`?`、`&` 分别写成 `%23`、`%3F`、

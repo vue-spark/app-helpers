@@ -1,8 +1,8 @@
 import type { ParamRaw } from './param'
 import type { ParamGroup, ParamGroupKey, ParamGroupsRaw } from './paramGroup'
 import { isArray } from '@/utils'
+import { readUrlSearchParams } from '../readUrlSearchParams'
 import { removeUrlSearchParams } from '../removeUrlSearchParams'
-import { resolveUrlSearchParams } from '../resolveUrlSearchParams'
 import { normalizeParamGroups } from './paramGroup'
 
 export * from './param'
@@ -67,7 +67,7 @@ const defaultGroupKey: ParamGroupKey = Symbol('default group')
  */
 export function parseUrl(options: ParseUrlOptions): ParseUrlResult | null {
   const { url = window.location.href, paramGroups: paramGroupsRaw } = options
-  const searchParams = resolveUrlSearchParams(url)
+  const searchParams = readUrlSearchParams(url)
 
   // If there are no parameters, return null
   if (!searchParams.size) {

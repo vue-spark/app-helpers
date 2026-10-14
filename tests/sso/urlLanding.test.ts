@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import {
   isHashPath,
+  readUrlSearchParams,
   removeUrlSearchParams,
-  resolveUrlSearchParams,
   writeUrlSearchParams,
 } from '../../src/sso'
 
@@ -141,8 +141,8 @@ describe('① 移除参数：四类形态', () => {
   it('锚点内有查询段时以它为准，主体 search 不参与读取', () => {
     // 以 hash 路径为主：主体 search 原样保留，既不被读取也不被搬迁。
     const url = 'https://h/?access_token=x&next=/x#/sso/callback?step=2'
-    expect(resolveUrlSearchParams(url).has('access_token')).toBe(false)
-    expect(resolveUrlSearchParams(url).get('step')).toBe('2')
+    expect(readUrlSearchParams(url).has('access_token')).toBe(false)
+    expect(readUrlSearchParams(url).get('step')).toBe('2')
     expect(removeUrlSearchParams(url, ['step'])).toBe(
       'https://h/?access_token=x&next=/x#/sso/callback',
     )
@@ -153,12 +153,12 @@ describe('① 移除参数：四类形态', () => {
 
   it('hash 路径内没有查询段时，主体 search 也不参与', () => {
     const url = 'https://h/?access_token=x#/orders'
-    expect(resolveUrlSearchParams(url).has('access_token')).toBe(false)
+    expect(readUrlSearchParams(url).has('access_token')).toBe(false)
     expect(removeUrlSearchParams(url, ['access_token'])).toBe(url)
     // 写入仍落锚点内查询段，此后从 location.hash 读得到
     const written = writeUrlSearchParams(url, [['access_token', 'X']])
     expect(written).toBe('https://h/?access_token=x#/orders?access_token=X')
-    expect(resolveUrlSearchParams(written).get('access_token')).toBe('X')
+    expect(readUrlSearchParams(written).get('access_token')).toBe('X')
   })
 
   it('锚点内的已编码文本不被二次编码', () => {
@@ -188,7 +188,7 @@ describe('② 解析：生效查询串的定位', () => {
   it('无锚点：取主体 search', () => {
     expect(
       Object.fromEntries(
-        resolveUrlSearchParams('https://h/orders?tab=1&access_token=x'),
+        readUrlSearchParams('https://h/orders?tab=1&access_token=x'),
       ),
     ).toEqual({ tab: '1', access_token: 'x' })
   })
@@ -196,7 +196,7 @@ describe('② 解析：生效查询串的定位', () => {
   it('普通锚点：锚点不污染锚点前的参数', () => {
     expect(
       Object.fromEntries(
-        resolveUrlSearchParams('https://h/orders?tab=1&access_token=x#detail'),
+        readUrlSearchParams('https://h/orders?tab=1&access_token=x#detail'),
       ),
     ).toEqual({ tab: '1', access_token: 'x' })
   })
@@ -204,39 +204,37 @@ describe('② 解析：生效查询串的定位', () => {
   it('hash 路径：取 fragment 查询段', () => {
     expect(
       Object.fromEntries(
-        resolveUrlSearchParams('https://h/#/orders?tab=1&access_token=x'),
+        readUrlSearchParams('https://h/#/orders?tab=1&access_token=x'),
       ),
     ).toEqual({ tab: '1', access_token: 'x' })
   })
 
   it('hash 路径内没有查询段时生效查询串为空（不看主体 search）', () => {
     expect(
-      Object.fromEntries(resolveUrlSearchParams('https://h/?q=1#/orders')),
+      Object.fromEntries(readUrlSearchParams('https://h/?q=1#/orders')),
     ).toEqual({})
   })
 
   it('hash 路径优先：锚点内有查询段时主体 search 被忽略', () => {
     // 锚点按路径形式书写时，应用只解析 `location.hash`，主体 search 不参与。
     expect(
-      Object.fromEntries(
-        resolveUrlSearchParams('https://h/?q=1#/orders?tab=1'),
-      ),
+      Object.fromEntries(readUrlSearchParams('https://h/?q=1#/orders?tab=1')),
     ).toEqual({ tab: '1' })
     // 锚点内没有查询段时生效查询串为空，同样不看主体 search
     expect(
-      Object.fromEntries(resolveUrlSearchParams('https://h/?q=1#/orders')),
+      Object.fromEntries(readUrlSearchParams('https://h/?q=1#/orders')),
     ).toEqual({})
   })
 
   it('普通锚点内的 `?` 属于锚点文本，不是生效查询串', () => {
     // 普通锚点整体不承载参数：既不做参数来源，也不遮蔽主体 search。
     expect(
-      Object.fromEntries(resolveUrlSearchParams('https://h/page#detail?x=1')),
+      Object.fromEntries(readUrlSearchParams('https://h/page#detail?x=1')),
     ).toEqual({})
     expect(isHashPath('#detail?x=1')).toBe(false)
     expect(
       Object.fromEntries(
-        resolveUrlSearchParams('https://h/page?body=1#detail?x=1'),
+        readUrlSearchParams('https://h/page?body=1#detail?x=1'),
       ),
     ).toEqual({ body: '1' })
   })
@@ -246,16 +244,14 @@ describe('③ 值内含 `?`：不得被误当作分隔符', () => {
   // 字面 `?` 在查询串值里是合法字符（WHATWG 的 query percent-encode set 不含 `?`）。
   it('解析保住整个 redirect 值', () => {
     expect(
-      resolveUrlSearchParams('https://h/?redirect=/login?from=a').get(
-        'redirect',
-      ),
+      readUrlSearchParams('https://h/?redirect=/login?from=a').get('redirect'),
     ).toBe('/login?from=a')
   })
 
   it('解析保住完整参数集', () => {
     expect(
       Object.fromEntries(
-        resolveUrlSearchParams('https://h/?a=1&redirect=/login?from=2'),
+        readUrlSearchParams('https://h/?a=1&redirect=/login?from=2'),
       ),
     ).toEqual({ a: '1', redirect: '/login?from=2' })
   })
@@ -279,7 +275,7 @@ describe('③ 值内含 `?`：不得被误当作分隔符', () => {
       'https://h/?a=1&redirect=/login?from=2',
       'https://h/?next=/a?b=c#detail',
     ]) {
-      expect(Object.fromEntries(resolveUrlSearchParams(u))).toEqual(
+      expect(Object.fromEntries(readUrlSearchParams(u))).toEqual(
         Object.fromEntries(new URL(u).searchParams),
       )
     }
@@ -364,10 +360,10 @@ describe('④ 写入落点：按「锚点是否 hash 路径」分流', () => {
   it('hash 路径 + 真实 search：写入后锚点内查询段成为唯一参数来源', () => {
     const out = write('https://h/?q=1#/orders?tab=1')
     expect(out).toBe('https://h/?q=1#/orders?tab=1&access_token=TOKEN')
-    expect(resolveUrlSearchParams(out).get('access_token')).toBe('TOKEN')
-    expect(resolveUrlSearchParams(out).get('tab')).toBe('1')
+    expect(readUrlSearchParams(out).get('access_token')).toBe('TOKEN')
+    expect(readUrlSearchParams(out).get('tab')).toBe('1')
     // 主体 search 是另一个读者域，不作为库的参数来源
-    expect(resolveUrlSearchParams(out).has('q')).toBe(false)
+    expect(readUrlSearchParams(out).has('q')).toBe(false)
   })
 
   it('已损坏的锚点形态不被误判为路径（防复利式损坏）', () => {
@@ -386,8 +382,8 @@ describe('④ 写入落点：按「锚点是否 hash 路径」分流', () => {
     // 平台 `location.search` 读者能读到
     expect(new URL(out).searchParams.get('access_token')).toBe('TOKEN')
     // 库内读者同样能读到；锚点内的 `x=1` 是锚点文本，不是参数
-    expect(resolveUrlSearchParams(out).get('access_token')).toBe('TOKEN')
-    expect(resolveUrlSearchParams(out).has('x')).toBe(false)
+    expect(readUrlSearchParams(out).get('access_token')).toBe('TOKEN')
+    expect(readUrlSearchParams(out).has('x')).toBe(false)
     expect(new URL(out).hash).toBe('#detail?x=1')
   })
 
@@ -481,7 +477,7 @@ describe('⑥ 复杂形态：hash 路径查询值里带完整 URL', () => {
     'http://xxx/a/b/?a=1#/c/d?b=2&c=http://xxxx/asd/#/cad?e=1#detail?d=3'
 
   it('读写删都只针对 hash 路径查询段 {b:2, c:…}', () => {
-    expect(Object.fromEntries(resolveUrlSearchParams(url))).toEqual({
+    expect(Object.fromEntries(readUrlSearchParams(url))).toEqual({
       b: '2',
       c: 'http://xxxx/asd/#/cad?e=1',
     })
@@ -517,7 +513,7 @@ describe('⑥ 复杂形态：hash 路径查询值里带完整 URL', () => {
     expect(written).toBe(
       'http://xxx/#/c/d?c=http%3A%2F%2Fxxxx%2Fasd%2F%23%2Fcad%3Fe%3D1',
     )
-    expect(resolveUrlSearchParams(written).get('c')).toBe(
+    expect(readUrlSearchParams(written).get('c')).toBe(
       'http://xxxx/asd/#/cad?e=1',
     )
     // 已编码的输入不被二次编码，原样保留

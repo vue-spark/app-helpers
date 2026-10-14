@@ -3,7 +3,7 @@ import { joinUrl, rawQueryKey, splitRawQuery, splitUrl } from './urlParts'
 /**
  * 移除 URL 中指定的参数
  *
- * 只作用于生效查询串（判据同 {@link resolveUrlSearchParams}）：`#/`、`#!` 锚点取
+ * 只作用于生效查询串（判据同 {@link readUrlSearchParams}）：`#/`、`#!` 锚点取
  * 锚点内的查询段，其余取主体 `search`。另一处查询串原样保留，不参与移除。
  *
  * 未被移除的内容按原始文本逐字节保留，不做解码与重编码，因此：

@@ -1,16 +1,21 @@
-import { splitUrl } from './urlParts'
+import { readUrlSearchParams } from './readUrlSearchParams'
 
 /**
  * 根据 URL 获取 {@link URLSearchParams} 实例
  *
- * `#/`、`#!` 锚点优先且互斥：取锚点内的查询段，主体 `search` 完全不参与，锚点内
- * 没有查询段时生效查询串为空（此时应用只解析 `location.hash`，主体 `search` 对它
- * 不可见）。其余情况取主体 `search`。
+ * @deprecated 改用 {@link readUrlSearchParams}，行为完全一致。`resolve` 在 JS 里的
+ * 惯用义是把描述符解析成具体值（`Promise.resolve`、`path.resolve`），而本函数只是
+ * 把地址里的查询串取出来，与 {@link writeUrlSearchParams}、
+ * {@link removeUrlSearchParams} 构成读、写、删一组，动词应统一为 `read`。
  *
- * 普通锚点内的 `?`（如 `#detail?d=3`）与锚点部分（如 `…/#/c/d?b=2#detail?d=3`
- * 里的 `#detail?d=3`）都不是查询串。写入落点与清理范围同此判据，见
- * {@link writeUrlSearchParams} 与 {@link removeUrlSearchParams}。
+ * 保留此名只为让既有调用方不必在同一版本内被迫修改，下个次版本会移除。迁移期按下
+ * 面改写即可：
+ *
+ * ```diff
+ * - import { resolveUrlSearchParams } from '@vue-spark/app-helpers/sso'
+ * + import { readUrlSearchParams } from '@vue-spark/app-helpers/sso'
+ * ```
  */
 export function resolveUrlSearchParams(url: string | URL): URLSearchParams {
-  return new URLSearchParams(splitUrl(url).query)
+  return readUrlSearchParams(url)
 }
